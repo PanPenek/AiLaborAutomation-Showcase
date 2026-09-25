@@ -5,7 +5,7 @@
   "description": "AI Labor Automation: an AI art creation studio. Write prompts, generate images, AI quality check, review, publish.",
   "main": "src/main/main.js",
   "author": "PanPenek",
-  "license": "Apache-2.0",
+  "license": "GPL-3.0-only",
   "scripts": {
     "start": "electron .",
     "test": "node tools/test.mjs",

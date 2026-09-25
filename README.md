@@ -9,7 +9,7 @@ You describe what you want to make. The app writes the prompts, generates the im
 checks every picture for mistakes, writes titles and descriptions, and lines everything
 up for you to approve. Nothing goes out without you saying so.
 
-[![License: Apache 2.0](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
+[![License: GPL-3.0](https://img.shields.io/badge/license-GPL--3.0-blue.svg)](LICENSE)
 ![Platform: Windows | macOS | Linux](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey)
 ![Electron 37](https://img.shields.io/badge/Electron-37-47848F?logo=electron&logoColor=white)
 ![Tests: npm test](https://img.shields.io/badge/tests-npm%20test-brightgreen)
@@ -284,7 +284,7 @@ AiLaborAutomation-Showcase/
 ├── install.bat / install.sh     one-click setup (Node.js + Electron)
 ├── start.bat                    launch on Windows
 ├── package.json                 npm start · npm test
-├── LICENSE                      Apache License 2.0
+├── LICENSE                      GNU GPL v3.0
 ├── docs/
 │   ├── ARCHITECTURE.md          module-by-module map for reviewers
 │   └── screenshots/
@@ -357,7 +357,20 @@ Newer npm versions can skip Electron's download step. This project allows it in
 
 ## License
 
-Licensed under the **Apache License, Version 2.0**. See [LICENSE](LICENSE).
+Copyright © 2026 PanPenek
+
+AiLabor Art Studio is free software, licensed under the
+**GNU General Public License v3.0**. See [LICENSE](LICENSE).
+
+In short:
+
+- ✅ **Use it** for anything, including commercial work.
+- ✅ **Modify it** and share your version.
+- 🔓 **Keep it open.** If you distribute a modified version, you must release its full
+  source code under the same GPL-3.0 license. Closed-source forks are not allowed.
+- ✍️ **Give credit.** Keep the copyright notice and mark what you changed.
+
+This summary is for convenience only. The [LICENSE](LICENSE) text is what applies.
 
 Electron is © the Electron contributors (MIT). Perchance, ComfyUI, LM Studio, DeviantArt,
 Patreon and pixiv are the property of their respective owners. This project isn't
