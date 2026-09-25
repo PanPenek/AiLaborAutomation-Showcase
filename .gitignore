@@ -12,3 +12,6 @@ playbook.json
 .env
 Thumbs.db
 .DS_Store
+comfyui/
+start_comfyui.bat
+*.part

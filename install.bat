@@ -5,6 +5,8 @@ cd /d "%~dp0"
 echo.
 echo  AiLabor Art Studio - installer
 echo  ==============================
+echo  Step 1 of 2: the app itself (Node.js + Electron)
+echo.
 where node >nul 2>nul
 if errorlevel 1 (
   echo  Node.js was not found.
@@ -32,5 +34,9 @@ if errorlevel 1 (
   exit /b 1
 )
 echo.
-echo  Done. Start the app with start.bat
+echo  Step 2 of 2: AI models, picked for your graphics card (every step can be skipped)
+node tools\setup.mjs %*
+echo.
+echo  Start the app with start.bat
 pause
+

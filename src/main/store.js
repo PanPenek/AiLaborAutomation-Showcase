@@ -18,7 +18,7 @@ const DEFAULT_SETTINGS = {
   lmStudio: {
     baseUrl: 'http://localhost:1234/v1',
     apiKey: 'lm-studio',
-    model: 'gemma-3-4b-it',
+    model: 'gemma-4-e4b-it', // the installer replaces this with the model it downloaded
     models: {
       ideation: '',
       vision: '',

@@ -145,16 +145,58 @@ flowchart LR
 |---|---|
 | **Operating system** | Windows 10/11 (tested), macOS or Linux |
 | **Node.js** | 18 or newer. The Windows installer sets it up for you if it's missing |
-| **An AI for writing and checking** | Free and local: [LM Studio](https://lmstudio.ai/) with any chat model, ideally one that can also see images (e.g. *Gemma 3 4B*). Or any OpenAI-compatible service with an API key |
-| **An image engine** | Nothing extra for **Perchance** (built in). Optional: [ComfyUI](https://www.comfy.org/) for local generation on an NVIDIA GPU |
+| **An AI for writing and checking** | Free and local: [LM Studio](https://lmstudio.ai/). The installer picks and downloads a model that fits your graphics card (table below). Or any OpenAI-compatible service with an API key |
+| **An image engine** | Nothing extra for **Perchance** (built in). Optional: [ComfyUI](https://www.comfy.org/) for local generation and picture editing; the Windows installer sets it up for you |
+| **Disk space** | About 1 GB for the app alone; 10-25 GB for an AI model; +20 GB for ComfyUI; +45 GB more for video |
 
 ### Windows (the easy way)
 
 1. Click **Code → Download ZIP** on this page and unzip it anywhere, or
    `git clone https://github.com/PanPenek/AiLaborAutomation-Showcase.git`
-2. Double-click **`install.bat`**. It installs Node.js if needed, then the app's single
-   dependency (Electron, about 100 MB).
+2. Double-click **`install.bat`**. It installs Node.js if needed and the app's single
+   dependency (Electron, about 100 MB), then asks a few questions about AI models (below).
 3. Double-click **`start.bat`**.
+
+### What the installer asks
+
+The installer first checks your graphics card and how much video memory (VRAM) it has. Then it
+suggests the best choice for that card. Press Enter to accept it, type another number, or skip.
+
+**1. The AI "brain"** (runs in LM Studio; writes prompts and titles, checks pictures, runs the Overseer):
+
+| Your graphics card | Suggested model | Label | Download |
+|---|---|---|---|
+| none, or under 6 GB | Gemma 4 E4B | Fast-lightweight | 6.0 GB |
+| 8 GB | Qwen3.5 9B | Balanced | 6.6 GB |
+| 12 GB | Gemma 4 12B | Quality | 7.3 GB |
+| 16 GB | Qwen3.8 27B, 3-bit (about 12 GB file) | High Quality (compact) | 13.0 GB |
+| 24 GB or more | Qwen3.8 27B, Q4_K_XL | High Quality | 18.5 GB |
+
+Every model gets a **64k-token context** by default. That is more than any job in the app
+needs; you can change it in LM Studio. If LM Studio is missing, the installer offers to
+install it. Small models work for titles and prompts, but the larger ones are much more
+reliable at the Overseer's multi-step tool use.
+
+**2. ComfyUI (optional, Windows).** Answer *no* and the studio uses the free Perchance
+website. Answer *yes* and the installer downloads the portable ComfyUI and updates it to the
+newest stable release. It then adds the GGUF loader node and installs this project's own
+workflows (in `workflows/`), which the app already knows how to drive. Other workflows usually
+need hand-editing to fit the app, so only these are installed. Image generation and editing
+always use **Qwen-Image 2.1**:
+
+| Choice | Label | VRAM | Download |
+|---|---|---|---|
+| Q8 | Quality | about 8 GB | 17.7 GB |
+| Q4 | Balanced | about 4-5 GB | 14.2 GB |
+
+**3. Video (optional).** Turns approved pictures into short clips with sound, using FastH3
+(MiniMax H3 distilled to 4 steps). **It needs a graphics card with 16-24 GB of VRAM** and a
+44 GB download, so the installer asks first and warns you.
+
+Every download resumes if it is interrupted and is checked against the file's published
+SHA-256 before use, so running the installer again is always safe. At the end it saves
+the choices into the app's settings, so the first start already uses them. Run it again at any
+time with `npm run setup`; `npm run setup -- --dry-run` shows the plan without downloading anything.
 
 ### macOS / Linux
 
@@ -167,9 +209,10 @@ npm start
 
 ### First five minutes
 
-1. Start **LM Studio**, load a model and turn on its local server (default `http://localhost:1234`).
-2. In the app, open **Settings → Engines**. LM Studio is already set up as the default
-   engine. Press **Test now** until the row turns green.
+1. Start **LM Studio** and turn on its local server (Developer tab, default `http://localhost:1234`).
+   The model the installer downloaded loads by itself on the first request.
+2. In the app, open **Settings → Engines**. LM Studio is already set up with that model.
+   Press **Test now** until the row turns green.
 3. Go to **Prompt Lab**, type a theme (e.g. *"a lighthouse keeper's cat on a stormy night"*),
    press **Generate prompts**, then **Queue**.
 4. Press **Start** under *Worker* on the Dashboard. Pictures appear in **Review** as they
@@ -281,14 +324,16 @@ app can't reach the file system. A full module-by-module map is in
 
 ```
 AiLaborAutomation-Showcase/
-├── install.bat / install.sh     one-click setup (Node.js + Electron)
+├── install.bat / install.sh     one-click setup (Node.js + Electron, then tools/setup.mjs)
 ├── start.bat                    launch on Windows
 ├── package.json                 npm start · npm test
 ├── LICENSE                      GNU GPL v3.0
 ├── docs/
 │   ├── ARCHITECTURE.md          module-by-module map for reviewers
 │   └── screenshots/
+├── workflows/                   ComfyUI graphs the installer sets up (Qwen-Image 2.1 Q8/Q4, FastH3 video)
 ├── tools/
+│   ├── setup.mjs                model installer: VRAM detection, menus, verified downloads
 │   └── test.mjs                 offline unit tests (no Electron, no network)
 └── src/
     ├── assets/                  app icon
@@ -375,3 +420,8 @@ This summary is for convenience only. The [LICENSE](LICENSE) text is what applie
 Electron is © the Electron contributors (MIT). Perchance, ComfyUI, LM Studio, DeviantArt,
 Patreon and pixiv are the property of their respective owners. This project isn't
 affiliated with any of them.
+
+The AI models the installer downloads are **not** part of this project and keep their own
+licences, shown on each model's download page: Gemma 4, Qwen3.5 and Qwen3.8
+(Apache-2.0), Qwen-Image 2.1 (Qwen Research License, non-commercial), MiniMax H3
+(MiniMax H3 Community License). Check them before selling what you make.

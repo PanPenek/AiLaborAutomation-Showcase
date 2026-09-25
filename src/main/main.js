@@ -518,12 +518,18 @@ function registerIpc() {
     return { ok: resp.ok, status: resp.status, base64: buf.toString('base64'), size: buf.length };
   });
 
-  /** Spawn the configured launch command detached; the driver polls for readiness. */
+  /**
+   * Spawn the configured launch command detached; the driver polls for readiness.
+   * The command is split into program + arguments first (double quotes group a path with
+   * spaces), because spawning the whole line as one program name fails with ENOENT.
+   */
   h('comfy:startServer', (_e, { command }) => {
     const cmd = String(command || '').trim();
     if (!cmd) return { ok: false, error: 'no launch command' };
+    const parts = (cmd.match(/"[^"]*"|\S+/g) || []).map((t) => t.replace(/^"(.*)"$/, '$1'));
     try {
-      const child = spawn(cmd, [], { detached: true, stdio: 'ignore', windowsHide: false });
+      const child = spawn(parts[0], parts.slice(1), { detached: true, stdio: 'ignore', windowsHide: false });
+      child.on('error', (e) => console.error('[comfy] launch failed:', e.message));
       child.unref();
       return { ok: true, pid: child.pid };
     } catch (e) {

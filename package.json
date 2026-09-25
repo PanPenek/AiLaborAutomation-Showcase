@@ -9,7 +9,8 @@
   "scripts": {
     "start": "electron .",
     "test": "node tools/test.mjs",
-    "start:debug": "electron . --remote-debugging-port=9335"
+    "start:debug": "electron . --remote-debugging-port=9335",
+    "setup": "node tools/setup.mjs"
   },
   "devDependencies": {
     "electron": "^37.2.0"
