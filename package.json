@@ -5,10 +5,10 @@
   "description": "AI Labor Automation: an all-ages AI art creation studio. Write prompts, generate images, AI quality check, review, publish.",
   "main": "src/main/main.js",
   "author": "PanPenek",
-  "license": "UNLICENSED",
-  "private": true,
+  "license": "Apache-2.0",
   "scripts": {
     "start": "electron .",
+    "test": "node tools/test.mjs",
     "start:debug": "electron . --remote-debugging-port=9335"
   },
   "devDependencies": {
@@ -16,5 +16,17 @@
   },
   "allowScripts": {
     "electron": true
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/PanPenek/AiLaborAutomation-Showcase"
+  },
+  "keywords": [
+    "electron",
+    "ai-art",
+    "comfyui",
+    "llm",
+    "automation",
+    "desktop-app"
+  ]
 }

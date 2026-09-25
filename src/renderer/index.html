@@ -2,9 +2,13 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
+<!-- img-src includes https: so the Statistics tab can show DeviantArt's own thumbnails —
+     without it every thumb the sync brings back was silently blocked by CSP. -->
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' ala: data: blob: https:; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' ala:;" />
 <title>AiLaborAutomation</title>
 <link rel="stylesheet" href="styles.css" />
+<!-- Before the stylesheet takes effect on <body>: sets data-theme from a
+     localStorage mirror so the window never flashes the other palette. -->
 <script src="theme.js"></script>
 </head>
 <body>
@@ -19,11 +23,16 @@
     </div>
     <nav id="nav">
       <button class="nav-btn active" data-tab="dashboard"><span class="nav-ico">▣</span>Dashboard</button>
+      <!-- Placed here by request, directly under the Dashboard. It does NOT take Ctrl+2:
+           see NUM_TABS in app.js — the number keys are pinned to the historical order so
+           that adding a tab here can never move Review off Ctrl+4. Ctrl+Shift+O instead. -->
       <button class="nav-btn" data-tab="overseer"><span class="nav-ico">☰</span>Overseer<span class="nav-badge" id="badge-overseer" hidden title="Cards the Overseer made that are still waiting in Review — not unread messages">0</span></button>
             <button class="nav-btn" data-tab="promptlab"><span class="nav-ico">✧</span>Prompt Lab</button>
       <button class="nav-btn" data-tab="review"><span class="nav-ico">◉</span>Review<span class="nav-badge" id="badge-review" hidden>0</span></button>
       <button class="nav-btn" data-tab="drafts"><span class="nav-ico">⇪</span>Drafts<span class="nav-badge" id="badge-drafts" hidden>0</span></button>
       <button class="nav-btn" data-tab="stats"><span class="nav-ico">▤</span>Statistics</button>
+      <!-- New tabs go AFTER Statistics, never before Review. Ctrl+1…9 is positional, and
+           Review being Ctrl+4 is muscle memory worth more than alphabetical tidiness. -->
       <button class="nav-btn" data-tab="comics"><span class="nav-ico">▥</span>Comics</button>
       <button class="nav-btn" data-tab="continuations"><span class="nav-ico">↻</span>Continuations<span class="nav-badge" id="badge-cont" hidden>0</span></button>
       <button class="nav-btn" data-tab="perchance"><span class="nav-ico">◈</span>Perchance</button>
@@ -40,9 +49,11 @@
   </aside>
 
   <main id="content">
+    <!-- DASHBOARD -->
     <section class="tab-pane active" id="pane-dashboard">
       <header class="pane-head"><h1>Dashboard</h1><p class="pane-sub">What is running, what each job is using, and whether it works.</p></header>
 
+      <!-- Status first. Every "is it broken or is it my settings" question is answered here. -->
       <div class="panel" id="panel-health">
         <div class="panel-head"><h2>Status <span class="hint" id="health-age"></span></h2>
           <div class="btn-row">
@@ -53,6 +64,7 @@
         <div id="health-rows" class="hz-list"></div>
       </div>
 
+      <!-- Where the work is sitting right now. -->
       <div class="panel">
         <div class="panel-head"><h2>Work in progress</h2>
           <div class="btn-row"><button class="btn ghost small" id="btn-flow-review">Open Review →</button></div>
@@ -116,6 +128,8 @@
       </div>
     </section>
 
+    <!-- OVERSEER — the chat that runs the app. `fill` because the transcript owns the
+         height and scrolls itself; a page-level scrollbar would fight the composer. -->
     <section class="tab-pane fill" id="pane-overseer">
       <header class="pane-head ov-head">
         <div>
@@ -143,9 +157,11 @@
       </div>
     </section>
 
+    <!-- PROMPT LAB -->
     <section class="tab-pane" id="pane-promptlab">
       <header class="pane-head"><h1>Prompt Lab</h1>
         <p class="pane-sub">Feed it a prompt that worked, a picture you want more of, or a story you want told. It reads the structure and writes more like it.</p></header>
+      <!-- job profiles: the same lab, switched between the two audiences it writes for -->
       <div class="panel" id="panel-lab-profile">
         <div class="panel-head"><h2>Job profile</h2>
           <div class="btn-row" id="lab-profile-switch">
@@ -193,6 +209,8 @@
           <div id="lab-skeleton-out" class="hint">Run the generator — the breakdown of your example appears here, including the slots it leaves empty.</div>
         </div>
       </div>
+      <!-- the generation queue: what the worker runs next, in order. Lives here because the
+           lab is where prompts are made; the Studio tab that used to hold it is gone. -->
       <div class="panel" id="panel-lab-queue">
         <div class="panel-head"><h2>Prompt queue <span class="hint" id="queue-count"></span></h2>
           <div class="btn-row">
@@ -219,6 +237,7 @@
         </div>
         <div id="queue-list" class="queue-list"></div>
       </div>
+      <!-- image references: build prompts from pictures instead of from a prompt -->
       <div class="panel" id="panel-lab-refs">
         <div class="panel-head"><h2>Build from image references <span class="hint" id="lab-ref-count"></span></h2>
           <div class="btn-row">
@@ -255,6 +274,7 @@
         <div id="ref-status" class="hint"></div>
         <div id="ref-briefs"></div>
       </div>
+      <!-- stories: describe what happens, get prompts that stage it -->
       <div class="panel" id="panel-lab-story">
         <div class="panel-head"><h2>Build from a story</h2></div>
         <div class="hint">Describe a story in your own words — who it is about, what happens to them, where it
@@ -297,11 +317,17 @@
       </div>
     </section>
 
+    <!-- REVIEW -->
     <section class="tab-pane" id="pane-review">
       <header class="pane-head"><h1>Review</h1><p class="pane-sub">Vision-QC results. Edit metadata, approve or reject. Nothing uploads without your approval.</p></header>
       <div class="filter-row" id="review-filters">
         <button class="chip active" data-filter="review">Needs review</button>
+        <!-- Cuts across status rather than being one: an Overseer card can be waiting,
+             approved or already uploaded, and "what did the agent make" is a question
+             about provenance. See cardsForFilter. -->
         <button class="chip" data-filter="agent" title="Everything the Overseer made — waiting, approved or already uploaded. Rejected and discarded ones drop out of this view, so the next card moves up as you triage; they are still on their own chips.">Agent generated</button>
+        <!-- Also not a status: the pictures picked as keepers in Pick keepers, still in the
+             Review reserve. See triage.js. -->
         <button class="chip" data-filter="keepers" title="Pictures you picked as the keeper of their batch in Pick keepers — your reserve, still in Review">★ Keepers</button>
         <button class="chip" data-filter="qc_error">QC failed to run</button>
         <button class="chip" data-filter="approved">Approved</button>
@@ -354,6 +380,7 @@
       <div id="review-grid" class="review-grid"></div>
     </section>
 
+    <!-- DRAFTS -->
     <section class="tab-pane" id="pane-drafts">
       <header class="pane-head"><h1>DeviantArt drafts</h1><p class="pane-sub">Approved art is uploaded to DeviantArt. With <b>submit after upload</b> on, one click uploads it and presses Submit; with it off it stops at a Sta.sh draft for you to submit.</p></header>
       <div class="panel" id="da-status-panel">
@@ -396,6 +423,7 @@
       </div>
     </section>
 
+    <!-- STATISTICS -->
     <section class="tab-pane" id="pane-stats">
       <header class="pane-head"><h1>DeviantArt statistics</h1>
         <p class="pane-sub">What you published, what it earned, and what the app has learned from it.</p></header>
@@ -423,6 +451,9 @@
           <div id="stats-playbook"></div>
         </div>
       </div>
+      <!-- Teach it. Everything above this panel is derived and is rewritten by the next
+           rebuild; everything inside it is written by hand and survives every rebuild,
+           sync and model output. That distinction is the whole design — see teach.js. -->
       <div class="panel" id="panel-teach">
         <div class="panel-head"><h2>Teach it <span class="hint" id="teach-count"></span></h2>
           <div class="btn-row">
@@ -467,6 +498,9 @@
         <div class="panel-head"><h2>What works <span class="hint">lift vs. your own median — shrunk toward 1 by sample size, so a thin result cannot shout</span></h2></div>
         <div id="stats-breakdowns" class="break-grid"></div>
       </div>
+      <!-- The prompt archive. See origins.js — this is the tab that answers "what did I
+           actually write to get that one", including for the deviations whose card is
+           long gone. -->
       <div class="panel" id="panel-archive">
         <div class="panel-head"><h2>What made it <span class="hint" id="archive-coverage"></span></h2>
           <div class="btn-row">
@@ -499,6 +533,12 @@
       </div>
     </section>
 
+    <!-- COMICS -->
+    <!-- Two things live here, and they are genuinely different objects.
+         A PAGE is several panels in gutters with the words drawn on top — one image file,
+         one deviation. A STORY is one picture with a block of prose beside it, which the
+         page layout cannot express because there the text is the point rather than a label
+         on the art. The builder is the same for both up to the moment of composition. -->
     <section class="tab-pane" id="pane-comics">
       <header class="pane-head"><h1>Comics</h1>
         <p class="pane-sub">Write it, draw it panel by panel, letter it, and send the finished page to Review like any other picture.</p></header>
@@ -515,6 +555,10 @@
       </div>
     </section>
 
+    <!-- CONTINUATIONS -->
+    <!-- The request under a picture is the cheapest signal this whole app gets: somebody
+         has already told you what they want more of, by name. The tab exists to make
+         acting on that a two-minute job instead of a rummage through the browser. -->
     <section class="tab-pane" id="pane-continuations">
       <header class="pane-head"><h1>Continuations</h1>
         <p class="pane-sub">Someone asked for a part two. Pick the deviation, say what changes, and the writer keeps the character.</p></header>
@@ -574,6 +618,7 @@
       </div>
     </section>
 
+    <!-- PERCHANCE -->
     <section class="tab-pane fill" id="pane-perchance">
       <div class="webview-bar">
         <span class="wv-title" id="pch-title">Perchance · AI Character Generator</span>
@@ -591,6 +636,7 @@
       <webview id="wv-perchance" src="https://perchance.org/ai-character-generator" partition="persist:perchance" allowpopups></webview>
     </section>
 
+    <!-- UPSCALER -->
     <section class="tab-pane fill" id="pane-upscaler">
       <div class="webview-bar">
         <span class="wv-title">ImgUpscaler · <span id="upscale-hint">log in once — session persists</span></span>
@@ -611,6 +657,15 @@
       <webview id="wv-upscale" src="https://imgupscaler.com/" partition="persist:upscaler" allowpopups></webview>
     </section>
 
+    <!-- PATREON -->
+    <!-- A posting deck, not a robot.
+         Patreon's composer cannot be driven reliably — it is a rich text editor with tiers,
+         attachments and scheduling hanging off it, and it hydrates on its own schedule. So
+         the app stops trying to press its buttons and instead removes the *fetching*: the
+         picture, the title and the description each go onto the clipboard on one keystroke,
+         in the order the composer asks for them. Posting a card becomes paste, paste, paste.
+         Publish stays yours here: DeviantArt has an endpoint the app can call for the Submit
+         press, Patreon has an editor that would have to be driven — which is the difference. -->
     <section class="tab-pane fill" id="pane-patreon">
       <div class="webview-bar">
         <span class="wv-title">Patreon · <span id="patreon-hint">approved for Patreon</span></span>
@@ -621,6 +676,9 @@
           <button class="btn" id="btn-pat-reload" hidden>Reload</button>
         </div>
       </div>
+      <!-- Page hidden: the deck is the whole pane. Page shown: the composer gets the full
+           height on the left and the deck becomes a sidebar (.pat-split) — the composer is
+           where the posting happens, so it is never the thing that gets squeezed. -->
       <div class="pat-body">
         <div class="pat-web">
           <webview id="wv-patreon" src="https://www.patreon.com/" partition="persist:patreon" allowpopups hidden></webview>
@@ -638,6 +696,7 @@
       </div>
     </section>
 
+    <!-- DEVIANTART -->
     <section class="tab-pane fill" id="pane-deviantart">
       <div class="webview-bar">
         <span class="wv-title">DeviantArt · <span id="da-wv-hint">log in once — session persists</span></span>
@@ -650,6 +709,14 @@
       <webview id="wv-da" src="https://www.deviantart.com/" partition="persist:da" allowpopups></webview>
     </section>
 
+    <!-- PIXIV -->
+    <!-- A session tab, exactly like the DeviantArt one — NOT a posting deck.
+         Patreon needs a deck because its composer has to be driven by a human. Pixiv has a
+         single endpoint that takes the picture and all of its metadata in one request, so
+         publishing belongs in the Drafts queue next to DeviantArt, and nothing about it
+         should need a visit here. What this tab is for is the login — pixiv answers 403 to
+         any request that does not come from a real signed-in page, so the upload is made
+         *by* this guest. Sign in once; the partition keeps it. -->
     <section class="tab-pane fill" id="pane-pixiv">
       <div class="webview-bar">
         <span class="wv-title">Pixiv · <span id="pixiv-hint">log in once — session persists</span></span>
@@ -660,13 +727,25 @@
           <button class="btn" id="btn-px-reload">Reload</button>
         </div>
       </div>
+      <!-- The staged-card banner. pixiv put a human check on its upload endpoint, so a card
+           can be sitting filled-in on the page below waiting for a Post that only a person
+           can press — this is what says which card that is, and what is still missing from
+           the form. Hidden whenever nothing is staged. -->
       <div class="px-staged" id="px-staged" hidden></div>
       <details class="fold px-diag"><summary>Diagnostics <em>— the exact fields sent, and pixiv's raw reply</em></summary>
         <div id="px-diag-body" class="hint"></div>
       </details>
+      <!-- Never `hidden`. Electron does not attach a <webview> whose element is
+           display:none, and this guest is not a preview of the work — it is the thing that
+           performs the upload. Hiding it to save space would take the uploader with it. -->
       <webview id="wv-pixiv" src="https://www.pixiv.net/" partition="persist:pixiv" allowpopups></webview>
     </section>
 
+    <!-- SETTINGS -->
+    <!-- One section at a time, chosen from the index on the left. The old page put all
+         eleven panels on screen at once, which is how a wrong timeout hides in plain
+         sight. Search cuts across every section, because knowing WHICH section a setting
+         lives in is exactly the knowledge someone hunting a setting does not have. -->
     <section class="tab-pane" id="pane-settings">
       <header class="pane-head set-head">
         <div>
@@ -697,20 +776,31 @@
 <script src="perchance.js"></script>
 <script src="comfy.js"></script>
 <script src="videocheck.js"></script>
+<!-- Before pipeline.js: the pixiv poster is a driver, like the perchance one, and the
+     pipeline calls into it from postCardToPixiv. -->
 <script src="pixiv.js"></script>
 <script src="variety.js"></script>
 <script src="insights.js"></script>
 <script src="teach.js"></script>
+<!-- After insights.js: the title corpus folds in the DeviantArt titles that insights owns. -->
 <script src="titles.js"></script>
 <script src="promptstyle.js"></script>
 <script src="promptlab.js"></script>
 <script src="pipeline.js"></script>
 <script src="triage.js"></script>
+<!-- After pipeline.js: the prompt archive is written from the upload path, and the
+     continuation engine queues jobs through Pipeline.makeJob. -->
 <script src="origins.js"></script>
 <script src="continuations.js"></script>
 <script src="comiclayout.js"></script>
 <script src="comics.js"></script>
+<!-- After pipeline.js: the teaser routes the pair with Pipeline.setDestination and
+     reuses its description transforms. -->
 <script src="teaser.js"></script>
+<!-- After pipeline.js and insights.js: the Overseer's tools are thin wrappers over both,
+     plus AutoMode, Teach, PromptStyle and Variety. It reaches for all of them at call time,
+     so load order only has to guarantee they exist before the first tick — but keeping it
+     here documents the dependency. -->
 <script src="overseer.js"></script>
 <script src="health.js"></script>
 <script src="providers.js"></script>
