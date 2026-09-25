@@ -17,10 +17,10 @@
  */
 (function () {
   const DESCRIPTION_BRIEFS = {
-    brief: '2-4 sentences. Artistic, warm and family-friendly. Describes the scene, mood, aesthetic.',
-    story: '4-7 sentences, roughly 70-130 words, written as a small story rather than a caption.' + ' Put the reader in the moment: what is happening right now, what led to it, what the character is' + ' thinking and noticing. Present tense. Do not list what is in the picture; the picture is already there.' + ' Wholesome and all-ages, and end on a beat that leaves something still happening.',
-    scene: '8-12 sentences, roughly 150-260 words, written as a scene from a story.' + ' Open in the middle of the moment, give it a before and an after, and let the character think and' + ' react in their own voice — at least one line of interior monologue or spoken dialogue.' + ' Sensory and specific: sounds, weather, light, small actions. Wholesome and all-ages,' + ' and end on a hook rather than a summary.',
-    expanded: '14-20 sentences, roughly 300-450 words — a proper short piece of writing, not a' + ' listing. Give it a shape: how the moment started, what turns partway through it, and' + ' where it leaves the character. Let them think and speak in their own voice. Slow down on small' + ' details: the weather, the light, the sounds, what their hands are doing. Whatever is visible' + ' in the picture has to arrive inside the story, never as a list. Wholesome and all-ages throughout.'
+    brief: '2-4 sentences. Artistic and warm. Describes the scene, mood, aesthetic.',
+    story: '4-7 sentences, roughly 70-130 words, written as a small story rather than a caption.' + ' Put the reader in the moment: what is happening right now, what led to it, what the character is' + ' thinking and noticing. Present tense. Do not list what is in the picture; the picture is already there.' + ' End on a beat that leaves something still happening.',
+    scene: '8-12 sentences, roughly 150-260 words, written as a scene from a story.' + ' Open in the middle of the moment, give it a before and an after, and let the character think and' + ' react in their own voice — at least one line of interior monologue or spoken dialogue.' + ' Sensory and specific: sounds, weather, light, small actions. End on a hook' + ' rather than a summary.',
+    expanded: '14-20 sentences, roughly 300-450 words — a proper short piece of writing, not a' + ' listing. Give it a shape: how the moment started, what turns partway through it, and' + ' where it leaves the character. Let them think and speak in their own voice. Slow down on small' + ' details: the weather, the light, the sounds, what their hands are doing. Whatever is visible' + ' in the picture has to arrive inside the story, never as a list.'
   };
 
   /** The configured description instruction, falling back to the house default. */
@@ -230,7 +230,7 @@
       const { house = '', skeleton = '', modeRule = '', extra = '' } = extras;
       const houseBlock = house ? `\n${house}\n` : '';
       const modeBlock = modeRule ? `\nHOW FAR TO TRAVEL FROM THE EXAMPLE:\n${modeRule}\n` : '';
-      return `You are a creative director for an anime-style, strictly all-ages AI art studio. Everything you write must be strictly safe-for-work and all-ages: no nudity, no sexual or suggestive content, no revealing outfits, fully clothed characters, family-friendly scenes only. Your job is to write image-generation prompts.
+      return `You are a creative director for an anime-style AI art studio. Your job is to write image-generation prompts.
 
 Theme to explore: "${theme}"
 ${example ? `\nHere is an example prompt from the artist showing the style and level of detail to imitate:\n"""${example}"""\n` : ''}${skeleton}${guidance ? `\n${guidance}\n` : ''}${avoid.length ? `\nPrompts already generated recently — write something clearly different from every one of these, not a reworded version:\n${avoid.map((p) => `- ${String(p).slice(0, 130)}`).join('\n')}\n` : ''}${houseBlock}${modeBlock}
@@ -248,7 +248,7 @@ Respond ONLY with a JSON array of strings: ["prompt1", "prompt2", ...]`;
       const { house = '', skeleton = '', modeRule = '', extra = '' } = extras;
       const houseBlock = house ? `\n${house}\n` : '';
       const modeBlock = modeRule ? `\nHOW FAR TO TRAVEL FROM THE EXAMPLE:\n${modeRule}\n` : '';
-      return `You are a creative director for an anime-style, strictly all-ages AI art studio. Everything you write must be strictly safe-for-work and all-ages: no nudity, no sexual or suggestive content, no revealing outfits, fully clothed characters, family-friendly scenes only. You write image-generation prompts AND set the generator's own controls for each one.
+      return `You are a creative director for an anime-style AI art studio. You write image-generation prompts AND set the generator's own controls for each one.
 
 Theme to explore: "${theme}"
 ${example ? `\nHere is an example prompt from the artist showing the style and level of detail to imitate:\n"""${example}"""\n` : ''}${skeleton}${guidance ? `\n${guidance}\n` : ''}${avoid.length ? `\nPrompts already generated recently — write something clearly different from every one of these, not a reworded version:\n${avoid.map((p) => `- ${String(p).slice(0, 130)}`).join('\n')}\n` : ''}
@@ -386,7 +386,7 @@ Respond ONLY with JSON:
       const shown = String(scene || '').trim()
         ? `\nAn inspector looked at the finished image and reported what it shows:\n"""${String(scene).trim()}"""\nThe prompt is what was asked for; this is what came out. Where they disagree, believe this.\n`
         : '';
-      return `You write DeviantArt submission metadata for all-ages anime-style AI art posts. Everything you write must be strictly safe-for-work and all-ages: no nudity, no sexual or suggestive content, no revealing outfits, fully clothed characters, family-friendly scenes only.
+      return `You write DeviantArt submission metadata for anime-style AI art posts.
 
 The image was generated from this prompt:
 """${prompt}"""
@@ -402,7 +402,7 @@ Respond ONLY with JSON: {"title": "...", "alts": ["...", "..."], "description": 
 
     /** Metadata written by a model that can SEE the image — the "Enhance" path. */
     metadataVision({ prompt, exampleStyle, maxTags, variety = '', preferredTags = [], titleHints = [] }) {
-      return `You are writing the gallery listing for one piece of the artist's own all-ages anime-style artwork. Everything you write must be strictly safe-for-work and all-ages: no nudity, no sexual or suggestive content, no revealing outfits, fully clothed characters, family-friendly scenes only. The finished image is attached. You are its copywriter, not its critic.
+      return `You are writing the gallery listing for one piece of the artist's own anime-style artwork. The finished image is attached. You are its copywriter, not its critic.
 
 Look at the image first. It is the truth about this piece.
 ${prompt ? `\nFor context, the artist asked the generator for this — it is what was REQUESTED, not what came out. Where the image and this disagree, the image wins:\n"""${String(prompt).slice(0, 900)}"""\n` : ''}${exampleStyle ? `\nMimic the tone/style of this example metadata from the artist:\n"""${exampleStyle}"""\n` : ''}${preferredTags.length ? `\nThese tags have measurably out-performed for this artist — include the ones that genuinely fit THIS image, and do not force the rest:\n${preferredTags.map((t) => `#${t}`).join(' ')}\n` : ''}${titleHints.length ? `\nTitle patterns that have performed well here: ${titleHints.join('; ')}.\n` : ''}${variety ? `\n${variety}\n` : ''}
@@ -440,7 +440,7 @@ Respond ONLY with a JSON array of exactly ${slots.length} string(s): ["...", ...
       const shown = seen
         ? `\nAn inspector looked at the finished images and reported what each one SHOWS, in order:\n${scenes.map((s, i) => `${i + 1}. ${String(s || '').trim() || '(not recorded)'}`).join('\n')}\n\nThe prompt is what was asked for; these sentences are what came out. Where the two disagree, believe these. Title each image from ITS OWN line — they are different pictures, not one picture described ${count} times.\n`
         : '';
-      return `You write DeviantArt submission metadata for all-ages anime-style AI art posts. Everything you write must be strictly safe-for-work and all-ages: no nudity, no sexual or suggestive content, no revealing outfits, fully clothed characters, family-friendly scenes only.
+      return `You write DeviantArt submission metadata for anime-style AI art posts.
 
 ${count} images were generated from this single prompt:
 """${prompt}"""

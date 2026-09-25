@@ -2655,7 +2655,7 @@
     paintedCards = painted;
   }
 
-  const matureFor = (c) => false; // showcase build: the mature flag is never set
+  const matureFor = (c) => false;
   const destFor = (c) => Pipeline.destinationOf(c);
   const destsFor = (c) => Pipeline.destinationsOf(c);
 
@@ -5427,10 +5427,10 @@
           <label class="fld slim"><span>original</span><input data-set="pixiv.original" value="${esc(s.pixiv?.original ?? '0')}" /></label>
         </div>
         <div class="fld-row">
-          <label class="fld slim"><span>xRestrict · all ages</span><input data-set="pixiv.xRestrictClean" value="${esc(s.pixiv?.xRestrictClean ?? '0')}" /></label>
+          <label class="fld slim"><span>xRestrict</span><input data-set="pixiv.xRestrictClean" value="${esc(s.pixiv?.xRestrictClean ?? '0')}" /></label>
           <label class="fld slim"><span>allowTagEdit</span><input data-set="pixiv.allowTagEdit" value="${esc(s.pixiv?.allowTagEdit ?? '0')}" /></label>
         </div>
-        <div class="note">restrict: 0 public · 1 my pixiv · 2 private. xRestrict: always all ages.</div>
+        <div class="note">restrict: 0 public · 1 my pixiv · 2 private.</div>
         <div class="note warn"><b>aiType</b> is 1 for “not AI” and 2 for AI-generated, and it is pixiv's own setting
           rather than a copy of the “Mark as AI-generated” tick above — that one is DeviantArt's disclosure and is
           legitimately off here. pixiv <b>requires</b> the declaration for AI work, so the two mistakes are not

@@ -599,8 +599,6 @@
 
     /** Generate images for a prompt. */
     async generate(promptText, { timeoutMs = 240000, count = 0, shape = '', artStyle = '', filters = null } = {}, log = () => {}) {
-      // All-ages guard: refuse unsuitable prompts before anything is rendered.
-      window.SafeMode.check(promptText);
       if (this.busy) throw new Error('driver busy');
       this.busy = true;
       const t0 = Date.now();

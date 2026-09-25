@@ -50,7 +50,7 @@
   const THEME_STOP = new Set(`a an the and or but of in on at to for with from by as is are was were be
     this that it its her his their she he very high detail detailed quality style anime girl girls
     woman women man men boy boys scene scenes image images art character characters portrait
-    portraits color colors colour colours vibrant sfw`.split(/\s+/).filter(Boolean));
+    portraits color colors colour colours vibrant`.split(/\s+/).filter(Boolean));
   const plain = (s) => String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '');
   const themeStem = (w) => w.replace(/(?:ations?|ings?|ers?|ies|es|ed|s|y)$/, '').replace(/(.)\1$/, '$1');
   function themeStems(text) {
@@ -548,7 +548,7 @@
         ? `The numbers below are real DeviantArt engagement, using only shared observed counters: ${(playbook.metricBasis || []).join(', ') || 'legacy basis'}. Each piece is compared with the posts published closest to it in time, so a week-old piece and a year-old piece are judged on the same footing — "2×" means twice what a typical post of that age earned.`
         : 'NOTE: published evidence is insufficient. These are local workflow outcomes, mixing keep/reject actions with automated QC discards. They are not verified human preferences or audience demand. Write the lessons accordingly.';
 
-      const prompt = `You analyse performance data for an all-ages anime-style AI art account and write down what to repeat.
+      const prompt = `You analyse performance data for an anime-style AI art account and write down what to repeat.
 
 ${signalNote}
 
@@ -601,7 +601,7 @@ Respond ONLY with a JSON array:
       const rankLine = idx >= 0
         ? `rank: #${idx + 1} of ${all.length} against posts of the same age (${round2(vs)}× what a typical post of its age earned)`
         : `rank: unranked (${this.perf.deviations.length} deviations on file)`;
-      const prompt = `A deviation on an all-ages anime-style AI art account is outperforming the artist's median.
+      const prompt = `A deviation on an anime-style AI art account is outperforming the artist's median.
 
 title: ${dev.title}
 ${dev.theme ? `theme: ${dev.theme}\n` : ''}${rankLine}

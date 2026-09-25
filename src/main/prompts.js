@@ -6,7 +6,7 @@
 const PATREON_LINE = (link) => link;
 
 function ideationPrompt({ theme, example, count }) {
-  return `You are a creative director for an anime-style, strictly all-ages AI art studio. Everything you write must be strictly safe-for-work and all-ages: no nudity, no sexual or suggestive content, no revealing outfits, fully clothed characters, family-friendly scenes only. Your job is to write image-generation prompts.
+  return `You are a creative director for an anime-style AI art studio. Your job is to write image-generation prompts.
 
 Theme to explore: "${theme}"
 ${example ? `\nHere is an example prompt from the artist showing the style and level of detail to imitate:\n"""${example}"""\n` : ''}
@@ -39,7 +39,7 @@ Verdict PASS only if score >= 7 and there are no major anatomical defects.`;
 }
 
 function metadataPrompt({ prompt, qcNotes, exampleStyle, maxTags }) {
-  return `You write DeviantArt submission metadata for all-ages anime-style AI art posts. Everything you write must be strictly safe-for-work and all-ages: no nudity, no sexual or suggestive content, no revealing outfits, fully clothed characters, family-friendly scenes only.
+  return `You write DeviantArt submission metadata for anime-style AI art posts.
 
 The image was generated from this prompt:
 """${prompt}"""
@@ -47,7 +47,7 @@ ${qcNotes ? `Inspector notes about the image: ${qcNotes}` : ''}
 ${exampleStyle ? `\nMimic the tone/style of this example metadata from the artist:\n"""${exampleStyle}"""\n` : ''}
 Generate:
 1. "title": catchy, tasteful, max 60 characters. No quotes, no hashtags.
-2. "description": 2-4 sentences. Artistic, warm and family-friendly. Describes the scene, mood, and aesthetic. Do NOT include any URLs or Patreon mentions — that gets prepended separately.
+2. "description": 2-4 sentences. Artistic and warm. Describes the scene, mood, and aesthetic. Do NOT include any URLs or Patreon mentions — that gets prepended separately.
 3. "tags": array of ${maxTags} relevant DeviantArt tags. Lowercase, single words (letters/numbers only, no spaces, no hyphens). Mix subject tags, style tags, and theme tags.
 
 Respond ONLY with JSON: {"title": "...", "description": "...", "tags": ["...", "..."]}`;

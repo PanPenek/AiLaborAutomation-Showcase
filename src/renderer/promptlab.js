@@ -205,7 +205,7 @@ ${(skeleton.missingSlots || []).length ? `- the example leaves these empty; leav
 
       const build = (n, have) => {
         const dodge = [...have, ...avoid];
-        return `You are a creative director for an anime-style, strictly all-ages AI art studio. Everything you write must be strictly safe-for-work and all-ages: no nudity, no sexual or suggestive content, no revealing outfits, fully clothed characters, family-friendly scenes only. You write image-generation prompts.
+        return `You are a creative director for an anime-style AI art studio. You write image-generation prompts.
 
 ${list.length > 1 ? 'EXAMPLE PROMPTS from the artist:' : 'EXAMPLE PROMPT from the artist:'}
 ${list.map((p, i) => `[${i + 1}] """${p.slice(0, 1200)}"""`).join('\n')}
@@ -459,7 +459,7 @@ Respond ONLY with JSON:
 
       const build = (n, have) => {
         const dodge = [...have, ...avoid];
-        return `You are a creative director for an anime-style, strictly all-ages AI art studio. Everything you write must be strictly safe-for-work and all-ages: no nudity, no sexual or suggestive content, no revealing outfits, fully clothed characters, family-friendly scenes only. You write image-generation prompts.
+        return `You are a creative director for an anime-style AI art studio. You write image-generation prompts.
 
 A vision model has read ${list.length} reference image(s) supplied by the artist. Here is what it saw${withPrompts ? `, and for ${withPrompts} of them the exact prompt that generated the picture is on file` : ''}:
 
@@ -523,7 +523,7 @@ Respond ONLY with a JSON array of strings: ["prompt1", "prompt2", ...]`;
 
       const build = (n, have) => {
         const dodge = [...have, ...avoid];
-        return `You are a creative director for an anime-style, strictly all-ages AI art studio. Everything you write must be strictly safe-for-work and all-ages: no nudity, no sexual or suggestive content, no revealing outfits, fully clothed characters, family-friendly scenes only. You write image-generation prompts from research the artist explicitly requested.
+        return `You are a creative director for an anime-style AI art studio. You write image-generation prompts from research the artist explicitly requested.
 
 RESEARCH TARGET: """${subject.slice(0, 500)}"""
 TYPE: ${researchKind === 'character' ? 'named character — identity fidelity matters' : 'visual concept — extract useful design ideas'}
@@ -563,7 +563,7 @@ Respond ONLY with a JSON array of strings: ["prompt1", "prompt2", ...]`;
     async readStory(story) {
       const text = String(story || '').trim();
       if (!text) throw new Error('no story to read');
-      const prompt = `You turn short stories into material for image-generation prompts, for an anime-style, strictly all-ages art studio. Everything you write must be strictly safe-for-work and all-ages: no nudity, no sexual or suggestive content, no revealing outfits, fully clothed characters, family-friendly scenes only.
+      const prompt = `You turn short stories into material for image-generation prompts, for an anime-style art studio.
 
 Here is a story the artist wrote. It may be rough notes rather than polished prose — treat it as the plan for a set of pictures:
 """${text.slice(0, 6000)}"""
@@ -621,7 +621,7 @@ ${moments.join('\n')}`;
 
       const build = (n, have) => {
         const dodge = [...have, ...avoid];
-        return `You are a creative director for an anime-style, strictly all-ages AI art studio. Everything you write must be strictly safe-for-work and all-ages: no nudity, no sexual or suggestive content, no revealing outfits, fully clothed characters, family-friendly scenes only. You write image-generation prompts.
+        return `You are a creative director for an anime-style AI art studio. You write image-generation prompts.
 
 The artist wrote a story and wants it turned into images. Their own words:
 """${text.slice(0, 4000)}"""
@@ -698,7 +698,7 @@ Respond ONLY with a JSON array of strings: ["prompt1", "prompt2", ...]`;
     FALLBACK_PROFILES: {
       deviantart: {
         label: 'DeviantArt',
-        instructions: 'All-ages art for the public DeviantArt gallery: clear characters, strong composition, friendly and wholesome — follow DeviantArt\'s rules.',
+        instructions: 'Art for the public DeviantArt gallery: clear characters, strong composition, broad appeal.',
         playbook: 'full',
         useGuidance: true,
         bank: [],
@@ -707,7 +707,7 @@ Respond ONLY with a JSON array of strings: ["prompt1", "prompt2", ...]`;
       },
       patreon: {
         label: 'Patreon',
-        instructions: 'All-ages art for Patreon supporters: more detailed scenes, behind-the-scenes variations and story sequences. Keep everything family-friendly.',
+        instructions: 'Art for Patreon supporters: more detailed scenes, behind-the-scenes variations and story sequences.',
         playbook: 'addon',
         useGuidance: false,
         bank: [],

@@ -13,7 +13,6 @@ up for you to approve. Nothing goes out without you saying so.
 ![Platform: Windows | macOS | Linux](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey)
 ![Electron 37](https://img.shields.io/badge/Electron-37-47848F?logo=electron&logoColor=white)
 ![Tests: npm test](https://img.shields.io/badge/tests-npm%20test-brightgreen)
-![All ages](https://img.shields.io/badge/content-all--ages-success)
 
 <img src="docs/screenshots/dashboard.png" width="860" alt="The Dashboard: status of every AI engine, the work in progress and the worker">
 
@@ -28,7 +27,6 @@ up for you to approve. Nothing goes out without you saying so.
 - [The whole story: how a picture is made](#the-whole-story-how-a-picture-is-made)
 - [Install and run](#install-and-run)
 - [A tour of the app](#a-tour-of-the-app)
-- [All-ages safe mode](#all-ages-safe-mode)
 - [For code reviewers](#for-code-reviewers)
 - [Project layout](#project-layout)
 - [Testing](#testing)
@@ -209,22 +207,6 @@ matter if you want to publish.
 
 ---
 
-## All-ages safe mode
-
-This showcase build is **strictly all-ages**, enforced at three levels:
-
-1. **Every AI writer is told.** Each prompt sent to a language model (prompt writer,
-   metadata writer, Overseer, story and comic writers) carries a hard *safe-for-work,
-   all-ages* rule.
-2. **Code refuses it anyway.** [`src/renderer/safemode.js`](src/renderer/safemode.js)
-   checks every prompt right before it reaches an image, image-edit or video generator.
-   An adult term stops the job with a clear message. Words are matched whole, so *"bra"*
-   is blocked but *"brass band"* is not.
-3. **Tests prove it.** `npm test` runs the filter against prompts that must be refused
-   and prompts that must pass.
-
----
-
 ## For code reviewers
 
 ### Tech stack
@@ -234,8 +216,8 @@ This showcase build is **strictly all-ages**, enforced at three levels:
   The UI is hand-written DOM plus one CSS file with theme tokens.
 - **One runtime dependency (Electron).** HTTP, file I/O, image handling and the test harness
   all use what Node and Chromium already provide.
-- **About 28,000 lines of JavaScript** in 42 modules (12 main-process, 30 UI), each opening
-  with a header that explains its job, and **670+ doc comments** on functions
+- **About 28,000 lines of JavaScript** in 41 modules (12 main-process, 29 UI), each opening
+  with a header that explains its job, and **650+ doc comments** on functions
 
 ### Architecture at a glance
 
@@ -255,15 +237,13 @@ flowchart TB
         PL[pipeline.js<br/>job orchestrator + Auto mode]
         G1[perchance.js]
         G2[comfy.js]
-        SM[safemode.js]
         O[overseer.js<br/>tool-using assistant]
         I[insights.js · teach.js · variety.js<br/>learning loop]
     end
     UI <--> P
     P <--> Main
-    PL --> SM
-    SM --> G1
-    SM --> G2
+    PL --> G1
+    PL --> G2
     O --> PL
     I --> PL
 ```
@@ -325,7 +305,6 @@ AiLaborAutomation-Showcase/
         ├── index.html, styles.css, app.js
         ├── pipeline.js          the orchestrator
         ├── perchance.js, comfy.js     image/video engines
-        ├── safemode.js          all-ages guard
         ├── overseer*.js         the assistant
         ├── promptlab.js, promptstyle.js, variety.js, titles.js
         ├── insights.js, teach.js, origins*.js   learning
@@ -343,8 +322,8 @@ npm test
 
 The tests load the **real** module files into an isolated Node VM (the way the browser
 would run them) and check their behaviour directly. You don't need Electron, a network
-connection, a GPU or an AI model to run them. They cover the safe-mode filter, JSON
-recovery from messy AI answers, prompt detection, title similarity, comic page geometry
+connection, a GPU or an AI model to run them. They cover JSON recovery from messy AI
+answers, the quality tail added to every prompt, prompt detection, title similarity, comic page geometry
 and text wrapping, and the parser for the AI's batch picks.
 
 Every JavaScript file also passes `node --check`.

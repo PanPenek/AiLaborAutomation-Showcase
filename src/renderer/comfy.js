@@ -672,8 +672,6 @@
 
     /** Generate images from a prompt through the configured image workflow. */
     async generate(promptText, { count = 0, references = [], shouldStop = null } = {}, log = () => {}) {
-      // All-ages guard: refuse unsuitable prompts before anything is rendered.
-      window.SafeMode.check(promptText);
       const cfg = this.cfg;
       await this.ensureServer({ log });
 
@@ -847,8 +845,6 @@
 
     /** Image → video through the configured i2v workflow. */
     async convertToVideo({ base64, mime = 'image/png', prompt, workflow, seconds, log = () => {} }) {
-      // All-ages guard: refuse unsuitable prompts before anything is rendered.
-      window.SafeMode.check(prompt);
       const cfg = this.cfg;
       await this.ensureServer({ log });
 
@@ -946,7 +942,7 @@
       { role: 'vision' }, 'Describing the image for the video prompt');
 
     const len = Number(seconds) > 0 ? `${Number(seconds)}-second` : 'short';
-    const rules = `Everything you write must be strictly safe-for-work and all-ages, with fully clothed characters. You write prompts for MiniMax H3, an image-to-video model that generates video WITH sound. It is CFG-distilled: there is NO negative prompt, and every word you write is read as something to show or hear. Follow this format exactly:
+    const rules = `You write prompts for MiniMax H3, an image-to-video model that generates video WITH sound. It is CFG-distilled: there is NO negative prompt, and every word you write is read as something to show or hear. Follow this format exactly:
 
 Line 1, verbatim: For the target video, at 0.00 seconds into the target video, <Picture 1> (from [Shot 1]) is fully referenced.
 Then one blank line, then three fields:

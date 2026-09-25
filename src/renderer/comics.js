@@ -15,7 +15,7 @@
   const T = {
     /** Prompt: write the character model sheet (the "bible") for a comic. */
     bible({ premise, theme, panels, style, tone }) {
-      return `You are the art director for an all-ages anime-style comic. Everything you write must be strictly safe-for-work and all-ages: no nudity, no sexual or suggestive content, no revealing outfits, fully clothed characters, family-friendly scenes only. Before anything is drawn you write the model sheet — the fixed description that every single panel will repeat word for word so the same character comes out of the generator every time.
+      return `You are the art director for an anime-style comic. Before anything is drawn you write the model sheet — the fixed description that every single panel will repeat word for word so the same character comes out of the generator every time.
 
 Premise: """${String(premise || '').slice(0, 700)}"""
 ${theme ? `Theme: ${theme}\n` : ''}${style ? `House style: ${style}\n` : ''}${tone ? `Tone: ${tone}\n` : ''}Planned length: ${panels} panels.
@@ -31,8 +31,7 @@ Respond ONLY with JSON:
   "logline": "one sentence describing what happens",
   "characters": [{"name": "short label used in dialogue", "look": "the repeatable sentence", "transformTo": "the changed physical description, or empty string"}],
   "setting": "one sentence: where this happens, time of day, light",
-  "style": "one short phrase for rendering style, repeated in every panel",
-  "contentRating": "all-ages"
+  "style": "one short phrase for rendering style, repeated in every panel"
 }`;
     },
 
@@ -41,7 +40,7 @@ Respond ONLY with JSON:
       const cast = (bible.characters || [])
         .map((c) => `- ${c.name}: ${c.look}${c.transformTo ? ` | after the change: ${c.transformTo}` : ''}`)
         .join('\n');
-      return `You are writing ${kind === 'story' ? 'a short illustrated story' : `a ${panels}-panel all-ages anime-style comic`}. Everything you write must be strictly safe-for-work and all-ages: no nudity, no sexual or suggestive content, no revealing outfits, fully clothed characters, family-friendly scenes only.
+      return `You are writing ${kind === 'story' ? 'a short illustrated story' : `a ${panels}-panel anime-style comic`}.
 
 Premise: """${String(premise || '').slice(0, 700)}"""
 ${theme ? `Theme: ${theme}\n` : ''}${tone ? `Tone: ${tone}\n` : ''}
@@ -97,7 +96,7 @@ Characters: ${(bible.characters || []).map((c) => `${c.name} (${c.look})`).join(
 The beats, in order:
 ${(panels || []).map((p, i) => `${i + 1}. ${p.beat || p.prompt}`).join('\n')}
 
-Write 140-240 words of prose telling this story. Past tense, third person, sensory, warm and all-ages. It sits beside the picture and must stand alone. No headings, no bullet points, no title.
+Write 140-240 words of prose telling this story. Past tense, third person, sensory and warm. It sits beside the picture and must stand alone. No headings, no bullet points, no title.
 
 Respond with the prose only — no JSON, no quotes around it.`;
     },
@@ -199,7 +198,7 @@ Respond with the prose only — no JSON, no quotes around it.`;
         visionMode: 'off',
         candidatesPerPanel: 2,
         shape: kind === 'story' ? 'portrait' : 'square',
-        bible: { characters: [], setting: '', style: '', contentRating: 'all-ages' },
+        bible: { characters: [], setting: '', style: '' },
         title: name,
         logline: '',
         story: '',
@@ -284,7 +283,6 @@ Respond with the prose only — no JSON, no quotes around it.`;
         })).filter((c) => c.look),
         setting: String(raw.setting || '').trim(),
         style: String(raw.style || project.bible.style || '').trim(),
-        contentRating: String(raw.contentRating || 'all-ages'),
       };
       if (raw.title) project.title = String(raw.title).slice(0, 60);
       if (raw.logline) project.logline = String(raw.logline).slice(0, 240);

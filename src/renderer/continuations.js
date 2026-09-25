@@ -22,8 +22,7 @@ Answer with JSON, no commentary:
   "wardrobe": "every visible garment with its colour and material",
   "setting": "where this is happening, time of day, notable props",
   "camera": "shot type and angle (e.g. three-quarter body, low angle, close-up)",
-  "style": "rendering style, line quality, colour palette, lighting character",
-  "contentRating": "all-ages"
+  "style": "rendering style, line quality, colour palette, lighting character"
 }
 
 Be concrete about colour and shape — "waist-length silver hair with a blunt fringe" is usable, "long hair" is not. If something is not visible, write "not visible" rather than guessing.`;
@@ -37,7 +36,7 @@ Be concrete about colour and shape — "waist-length silver hair with a blunt fr
       const anchorLine = anchors.length
         ? `\nThese must be IDENTICAL to the original in every prompt — copy the original's own wording for them wherever you can:\n${anchors.map((a) => `- ${a}`).join('\n')}\n`
         : '';
-      return `You write image-generation prompts for an anime-style, strictly all-ages AI art studio. Everything you write must be strictly safe-for-work and all-ages: no nudity, no sexual or suggestive content, no revealing outfits, fully clothed characters, family-friendly scenes only. This job is a CONTINUATION: the audience has seen one picture and asked for the next moment in it. Same character, same world, later.
+      return `You write image-generation prompts for an anime-style AI art studio. This job is a CONTINUATION: the audience has seen one picture and asked for the next moment in it. Same character, same world, later.
 
 THE ORIGINAL PROMPT:
 """${String(prompt || '').slice(0, 900)}"""

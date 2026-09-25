@@ -6,7 +6,7 @@
  * as a plain script attached to `window`) and checks its behaviour directly.
  *
  * Covered:
- *   - safemode.js     : adult prompts are refused, ordinary art prompts pass
+ *   - promptstyle.js  : the quality tail every prompt must end with
  *   - state.js (U)    : JSON is recovered from chatty / slightly broken LLM answers
  *   - titles.js       : near-duplicate titles are detected, different ones are not
  *   - comiclayout.js  : panel geometry and text wrapping for comic pages
@@ -36,17 +36,19 @@ function test(name, fn) {
   catch (e) { failed++; console.log('  FAIL ' + name + '\n       ' + e.message); }
 }
 
-console.log('safemode.js');
+console.log('promptstyle.js');
 {
-  const { SafeMode } = load('safemode.js');
-  const blocked = (p) => { try { SafeMode.check(p); return false; } catch { return true; } };
-  for (const p of ['a naked knight', 'sexy pose', 'nsfw art', 'topless figure', 'lingerie shop']) {
-    test(`refuses "${p}"`, () => assert.equal(blocked(p), true));
-  }
-  for (const p of ['a knight in red armour at dawn', 'brass lamp on a desk', 'a fox spirit in a forest',
-    'Essex countryside', 'a brass band parade', 'cocktail of colours, sunset over the sea']) {
-    test(`allows "${p}"`, () => assert.equal(blocked(p), false));
-  }
+  const w = load('state.js', 'promptstyle.js');
+  const prof = { enough: false, tail: [] };   // no learned style yet: only the built-in quality tail
+  test('appends the missing quality guards to a prompt', () => {
+    const out = w.PromptStyle.enforceTail('a lighthouse keeper on a stormy cliff, lantern glow', prof);
+    assert.ok(out.endsWith('no extra fingers, no extra limbs'), out);
+  });
+  test('does not repeat guards that are already there', () => {
+    const src = 'a fox spirit in a forest, no extra fingers, no extra limbs';
+    assert.equal(w.PromptStyle.enforceTail(src, prof), src);
+  });
+  test('leaves an empty prompt empty', () => assert.equal(w.PromptStyle.enforceTail('  ', prof), ''));
 }
 
 console.log('state.js');

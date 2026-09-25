@@ -15,7 +15,7 @@ opens the file itself, so the code and this document say the same thing.
 │ app.js (all tabs) ─ state.js (shared state + helpers)                                   │
 │ pipeline.js ── ideate → generate → save → quality check → metadata → Review → publish   │
 │      │             │                                                                    │
-│      │        safemode.js → perchance.js | comfy.js                                     │
+│      │        perchance.js | comfy.js (image + video engines)                           │
 │ overseer.js (chat agent: every tool wraps a function a button already calls)            │
 │ insights.js + teach.js + variety.js + promptstyle.js → guidance for the prompt writers │
 └─────────────────────────────────────────────────────────────────────────────────────────┘
@@ -31,12 +31,12 @@ opens the file itself, so the code and this document say the same thing.
 - **Every AI call goes through `U.llmChat` / `U.llmVision`** (`state.js`) → IPC → `llm.js`,
   so fallbacks, token counts and "which engine answered" are recorded in one place.
 - **Hard rules are enforced in code, not only requested in prompts** (tag format, banned
-  phrases, safe mode, quality-score caps). Models forget instructions. Code doesn't.
+  phrases, quality-score caps). Models forget instructions. Code doesn't.
 
 ### Data flow of one job
 
 1. `Pipeline.makeJob()` creates a job `{ prompt, theme, engine, … }` and puts it in the queue (`store.js`).
-2. The generation lane calls `SafeMode.check()`, then `Perchance.generate()` or `Comfy.generate()`
+2. The generation lane calls `Perchance.generate()` or `Comfy.generate()`
    → `{ images: [{ base64, mime, w, h }] }`.
 3. Images are saved through IPC into the library, and each becomes a **card**.
 4. The inspection lane runs the vision quality check. Code-side caps can only lower the score.
@@ -218,19 +218,13 @@ Two panels: the engines themselves (URL + key, or a CLI command) and the routing
 
 ## Image and video engines
 
-### `src/renderer/safemode.js` <sub>(29 lines)</sub>
-
-**All-ages safe mode (showcase build).**
-
-Every prompt that reaches an image, image-edit or video generator passes through SafeMode.check() first; a prompt containing adult terms is refused before anything is rendered. The word list is matched on whole words, so ordinary words that merely contain a blocked sequence are not affected. Tested by tools/test.mjs (npm test).
-
-### `src/renderer/perchance.js` <sub>(687 lines)</sub>
+### `src/renderer/perchance.js` <sub>(685 lines)</sub>
 
 **Drives the free Perchance web image generator inside the app's embedded browser (webview).**
 
 Perchance has no API, so the driver operates the page like a person would: fill the description, set the style/shape/count dropdowns, press Generate, wait for the result frames, and extract the finished images. Frame access goes through the main process (webFrameMain.executeJavaScript) because the generator runs in cross-origin iframes. Every page call has a hard timeout so a hung page can never freeze the pipeline.
 
-### `src/renderer/comfy.js` <sub>(994 lines)</sub>
+### `src/renderer/comfy.js` <sub>(990 lines)</sub>
 
 **Local image and video generation through a ComfyUI server.**
 
@@ -309,7 +303,7 @@ It also learns the artist's own title style from the titles they rename by hand.
 
 ## The Overseer assistant
 
-### `src/renderer/overseer.js` <sub>(1,877 lines)</sub>
+### `src/renderer/overseer.js` <sub>(1,876 lines)</sub>
 
 **The Overseer, a chat assistant that operates the app with tools.**
 
@@ -401,7 +395,7 @@ Recorded at upload time from the card as it was, so deleting the card later does
 
 ## Comics, continuations, review tools
 
-### `src/renderer/comics.js` <sub>(722 lines)</sub>
+### `src/renderer/comics.js` <sub>(720 lines)</sub>
 
 **The comic page / illustrated story builder.**
 
@@ -429,7 +423,7 @@ Pure functions, no network, no models, so it is the half of the comic builder th
 
 The editor is a live preview of the REAL page composer, drawn at whatever scale fits the screen, so what you see is exactly what exports (font fitting and wrapping included). Speech bubbles are dragged directly on that canvas.
 
-### `src/renderer/continuations.js` <sub>(299 lines)</sub>
+### `src/renderer/continuations.js` <sub>(298 lines)</sub>
 
 **"someone asked for a part 2 of this one."**
 
